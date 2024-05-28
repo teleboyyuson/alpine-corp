@@ -5,7 +5,7 @@ resource "aws_vpc" "default" {
   
   tags = {
     terraform = "true"
-    Name = "${terraform.workspace}-vpc"
+    Name = "${terraform.workspace}-vpc-var.vpc.name"
   }
   
 }
@@ -17,7 +17,7 @@ resource "aws_subnet" "default" {
 
   tags = {
     terraform = "true"
-    Name = "${terraform.workspace}-subnet"
+    Name = "${terraform.workspace}-subnet-var.vpc.name"
   }
   
 }
