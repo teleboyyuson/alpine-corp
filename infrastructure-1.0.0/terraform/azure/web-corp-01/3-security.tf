@@ -49,7 +49,7 @@ resource "azurerm_network_security_group" "nsg_web" {
 
   security_rule {
     name                       = "allow-https"
-    priority                   = 100
+    priority                   = 101
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
@@ -61,7 +61,7 @@ resource "azurerm_network_security_group" "nsg_web" {
 
   security_rule {
     name                       = "allow-ssh"
-    priority                   = 101
+    priority                   = 102
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "Tcp"
