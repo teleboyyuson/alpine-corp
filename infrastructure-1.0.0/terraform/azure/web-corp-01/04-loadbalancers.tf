@@ -20,4 +20,38 @@ resource "azurerm_lb" "lb_web" {
     name                 = "lb_fip-${terraform.workspace}-${var.rg_name}"
     public_ip_address_id = azurerm_public_ip.lb_pip.id
   }
+
+  depends_on = [azurerm_resource_group.rg]
+}
+
+# Load Balancer Backend Pool
+resource "azurerm_lb_backend_address_pool" "lb_bp" {
+  name                  = "lb_lb-${terraform.workspace}-${var.rg_name}"
+  loadbalancer_id       = azurerm_lb.lb_web.id
+
+  depends_on = [azurerm_lb.lb_web]
+}
+
+# Load Balancer Health Probe
+resource "azurerm_lb_probe" "lb_probe" {
+  name                = "http-healthprobe"
+  loadbalancer_id     = azurerm_lb.lb_web.id
+  protocol            = "Http"
+  port                = 80
+  request_path        = "/"
+
+  depends_on = [azurerm_lb.lb_web]
+}
+
+# Load Balancer Rule (HTTP)
+resource "azurerm_lb_rule" "lb_rule" {
+  name                        = "http-rule"
+  resource_group_name         = "rg-${terraform.workspace}-${var.rg_name}"
+  loadbalancer_id             = azurerm_lb.lb_web.id
+  protocol                    = "Tcp"
+  frontend_port               = 80
+  backend_port                = 80
+  frontend_ip_configuration_id = "lb_fip-${terraform.workspace}-${var.rg_name}.id"
+  backend_address_pool_id     = azurerm_lb_backend_address_pool.lb_bp.id
+  probe_id                    = azurerm_lb_probe.lb_probe.id
 }
