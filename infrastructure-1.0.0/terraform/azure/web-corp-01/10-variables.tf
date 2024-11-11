@@ -6,10 +6,10 @@ variable "location" {
     type = string
 }
 
-variable "cidr_blocks" {
+variable "vnet" {
     type = list(string)
 }
 
-variable "subnet" {
+variable "snet" {
     type = list(string)
 }
