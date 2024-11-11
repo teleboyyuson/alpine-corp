@@ -44,14 +44,20 @@ resource "azurerm_lb_probe" "lb_probe" {
 }
 
 # Load Balancer Rule (HTTP)
-resource "azurerm_lb_rule" "lb_rule" {
-  name                        = "http-rule"
-  resource_group_name         = "rg-${terraform.workspace}-${var.rg_name}"
-  loadbalancer_id             = azurerm_lb.lb_web.id
-  protocol                    = "Tcp"
-  frontend_port               = 80
-  backend_port                = 80
-  frontend_ip_configuration_id = "lb_fip-${terraform.workspace}-${var.rg_name}.id"
-  backend_address_pool_id     = azurerm_lb_backend_address_pool.lb_bp.id
-  probe_id                    = azurerm_lb_probe.lb_probe.id
+resource "azurerm_lb_rule" "lb_rule_http" {
+  loadbalancer_id                = azurerm_lb.lb_web.id
+  name                           = "http-rule"
+  protocol                       = "Tcp"
+  frontend_port                  = 80
+  backend_port                   = 80
+  frontend_ip_configuration_name = "lb_fip-${terraform.workspace}-${var.rg_name}"
+}
+
+resource "azurerm_lb_rule" "lb_rule_https" {
+  loadbalancer_id                = azurerm_lb.lb_web.id
+  name                           = "https-rule"
+  protocol                       = "Tcp"
+  frontend_port                  = 443
+  backend_port                   = 443
+  frontend_ip_configuration_name = "lb_fip-${terraform.workspace}-${var.rg_name}"
 }
