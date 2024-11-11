@@ -10,7 +10,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 //  admin_ssh_key {
 //    public_key = file("~/.ssh/id_rsa.pub")  # Path to your SSH public key
 //  }
-  network_interface_ids    = [azurerm_network_interface.vm_nic[count.index].id]
+  network_interface_    = [azurerm_network_interface.vm_nic[count.index].id]
   tags = {
     environment = "dev"
   }
@@ -32,13 +32,32 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
 resource "azurerm_network_interface" "vm_nic" {
   count                    = 1
-  name                     = "vm_nic0${count.index + 1}"
+  name                     = "vm_nic-${count.index + 1}"
   location                 = "${var.location}"
   resource_group_name      = "rg-${terraform.workspace}-${var.rg_name}"
 
   ip_configuration {
     name                          = "internal"
-    subnet_id                     = azurerm_subnet.snet.id
+    subnet_id                     = azurerm_subnet.snet-priv.id
     private_ip_address_allocation = "Dynamic"
   }
+}
+
+resource "azurerm_network_interface" "vm_nic" {
+  count                    = 1
+  name                     = "vm_nic-${count.index + 1}"
+  location                 = "${var.location}"
+  resource_group_name      = "rg-${terraform.workspace}-${var.rg_name}"
+
+  ip_configuration {
+    name                          = "external"
+    subnet_id                     = azurerm_subnet.snet-pub.id
+    private_ip_address_allocation = "Dynamic"
+  }
+}
+
+resource "azurerm_network_interface_backend_address_pool_association" "lb_bp_assoc" {
+  network_interface_id    = azurerm_network_interface.vm_nic-1.id
+  ip_configuration_name   = "lb_bp_connection"
+  backend_address_pool_id = azurerm_lb_backend_address_pool.lb_bp.id
 }

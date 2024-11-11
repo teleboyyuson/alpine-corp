@@ -10,6 +10,10 @@ variable "vnet" {
     type = list(string)
 }
 
-variable "snet" {
+variable "snet-pub" {
+    type = list(string)
+}
+
+variable "snet-priv" {
     type = list(string)
 }
