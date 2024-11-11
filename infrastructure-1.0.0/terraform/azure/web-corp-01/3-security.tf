@@ -25,6 +25,8 @@ resource "azurerm_network_security_group" "nsg_lb" {
     destination_port_range     = 443
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+
+    depends_on = [azurerm_resource_group.rg]
   }
 }
 
@@ -55,5 +57,7 @@ resource "azurerm_network_security_group" "nsg_web" {
     destination_port_range     = 22
     source_address_prefix      = "*"
     destination_address_prefix = "*"
+
+    depends_on = [azurerm_resource_group.rg]
   }
 }
