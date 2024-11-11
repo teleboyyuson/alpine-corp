@@ -1,11 +1,12 @@
 resource "azurerm_linux_virtual_machine" "vm" {
   count                    = 1
-  name                     = "vm-${count.index + 1}-${terraform.workspace}-${var.rg_name}"
+  name                     = "vm-${terraform.workspace}-${var.rg_name}"
   resource_group_name      = "rg-${terraform.workspace}-${var.rg_name}"
   location                 = "${var.location}"
   size                     = "Standard_B1ls"  # Adjust size as needed
   admin_username           = "adminuser"
   admin_password           = "abcd@1234"
+  disable_password_authentication = false
 //  admin_ssh_key {
 //    public_key = file("~/.ssh/id_rsa.pub")  # Path to your SSH public key
 //  }
@@ -13,7 +14,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
   tags = {
     environment = "dev"
   }
-  
+
   custom_data = filebase64("scripts/bootstrap.sh")
 
   os_disk {
@@ -31,7 +32,7 @@ resource "azurerm_linux_virtual_machine" "vm" {
 
 resource "azurerm_network_interface" "vm_nic" {
   count                    = 1
-  name                     = "vm_nic-${count.index + 1}"
+  name                     = "vm_nic0${count.index + 1}"
   location                 = "${var.location}"
   resource_group_name      = "rg-${terraform.workspace}-${var.rg_name}"
 

@@ -48,6 +48,18 @@ resource "azurerm_network_security_group" "nsg_web" {
   }
 
   security_rule {
+    name                       = "allow-https"
+    priority                   = 100
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = 443
+    source_address_prefix      = "*"
+    destination_address_prefix = "*"
+  }
+
+  security_rule {
     name                       = "allow-ssh"
     priority                   = 101
     direction                  = "Inbound"
@@ -58,5 +70,6 @@ resource "azurerm_network_security_group" "nsg_web" {
     source_address_prefix      = "*"
     destination_address_prefix = "*"
   }
+
   depends_on = [azurerm_resource_group.rg]
 }
