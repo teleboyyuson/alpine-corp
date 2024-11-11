@@ -27,3 +27,10 @@ resource "azurerm_subnet" "snet-pub" {
 
   depends_on = [azurerm_virtual_network.vnet]
 }
+
+resource "azurerm_network_interface_security_group_association" "nsg_priv-assoc" {
+  network_interface_id      = azurerm_network_interface.snet-priv.id
+  network_security_group_id = azurerm_network_security_group.nsg-priv.id
+
+  depends_on = [azurerm_virtual_network.vnet]
+}
